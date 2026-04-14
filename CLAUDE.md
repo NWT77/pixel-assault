@@ -47,12 +47,26 @@ The script is organized into lettered sections (A–P) in order of dependency:
 
 ## Git Workflow
 
-Commit and push after every meaningful change:
+**Commit and push to GitHub after every meaningful unit of work.** This is a hard requirement — never leave the repo in an uncommitted state at the end of a task. The goal is that the GitHub remote always reflects the latest working state so work can be recovered or reverted at any point.
 
+### Rules
+- Commit after each logical change (feature added, bug fixed, tuning tweak applied). Do not batch unrelated changes into one commit.
+- Always push immediately after committing — a local-only commit is not a saved version.
+- Write commit messages that describe **what changed and why**, not just "update file".
+
+### Commands
 ```bash
-git add shooter.html  # (or whichever file changed)
-git commit -m "short description of what changed and why"
+git add <file>          # stage only the changed file(s), never git add -A blindly
+git commit -m "verb: concise description of the change"
 git push
+```
+
+### Good commit message examples
+```
+fix: crosshair now visible on menu and game-over screens
+feat: add fast enemy zigzag behavior starting wave 2
+balance: reduce boss shoot interval in phase 2 from 900ms to 450ms
+refactor: extract drawCursor() helper used by all render states
 ```
 
 Remote: `https://github.com/NWT77/pixel-assault`
