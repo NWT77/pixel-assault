@@ -17,43 +17,58 @@ use cases and new Claude / Anthropic features.
 
 ## Setup
 
-### 1. Install `uv` (for the `fetch` MCP server)
+Routines execute in Anthropic's cloud sandbox, so you do **not** need to
+install anything locally to make the daily digest run. Pick the path that
+matches where you use Claude Code.
 
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+### Path A — iPhone / web Claude Code app (zero install)
 
-The `.mcp.json` at the repo root tells Claude Code to launch
-`mcp-server-fetch` via `uvx` on demand. No other install step needed.
+1. Open the `NWT77/pixel-assault` repo on the
+   `claude/news-aggregator-automation-F2eWq` branch in the app.
+2. Run `/schedule` in a session. When prompted:
+   - **Prompt**: *"run the digest defined in `digest/prompt.md`"*
+   - **Cadence**: `daily at 08:00` (your local timezone)
+   - **Model**: `Haiku 4.5`
+   - **Repo access**: enable write, so the routine can commit to `digest/archive/`
+3. (Optional) Edit `digest/prompt.md` in the app, replacing `REPLACE_ME`
+   YouTube channel IDs with real ones. Find a channel ID from the page
+   source of any channel page — search for `channelId` or `"externalId"`.
 
-### 2. Open the repo in Claude Code
+That's it. Anthropic's sandbox reads `.mcp.json`, launches
+`mcp-server-fetch`, runs the prompt, commits the output. Your phone can be
+off when it fires.
 
-```bash
-cd pixel-assault
-claude
-```
+### Path B — MacBook / desktop CLI (needed only for dry-runs)
 
-First launch will prompt you to approve the `fetch` MCP server. Approve it.
+Use this if you want to test the prompt on demand before trusting the
+daily schedule, or iterate on `digest/prompt.md` faster than once a day.
 
-### 3. Schedule the routine
+1. Install `uv` so the `fetch` MCP server can launch locally:
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+2. Open the repo:
+   ```bash
+   cd pixel-assault
+   claude
+   ```
+   Approve the `fetch` MCP server on first prompt.
+3. Schedule the routine with `/schedule` (same inputs as Path A), **or**
+   do a one-shot dry run (see below).
 
-Inside Claude Code:
+## Dry-run the digest once
 
-```
-/schedule
-```
+From a desktop Claude Code session in the repo, ask:
 
-When prompted:
-- **Prompt**: paste the contents of `digest/prompt.md`, or reference it: *"run the digest defined in digest/prompt.md"*
-- **Cadence**: `daily at 08:00` (your local timezone)
-- **Model**: `Haiku 4.5` — cheapest and plenty for this task
-- **Repo access**: enable, so the routine can write + commit to `digest/archive/`
+> run the digest defined in digest/prompt.md, but write the output to
+> `digest/archive/dryrun.md` instead of today's date, and do not commit
 
-### 4. (Optional) Add YouTube channels
+This exercises every source end-to-end and lets you eyeball the output
+before committing to the daily schedule. Delete `digest/archive/dryrun.md`
+when satisfied.
 
-Edit `digest/prompt.md`, replacing `REPLACE_ME` with real channel IDs.
-Find a channel ID from the page source of any channel page — search for
-`channelId` or `"externalId"`.
+Iterate on `digest/prompt.md`, re-run the dry-run, and only then register
+the daily routine.
 
 ## Output
 
